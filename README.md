@@ -13,7 +13,7 @@ var LRU = require('lru').LRU;
 
 var cache = new LRU(10);
 
-cache.set('foo', bar');
+cache.set('foo', 'bar');
 cache.get('foo'); //=> bar
 ```
 
