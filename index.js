@@ -1,5 +1,5 @@
 var events = require('events');
-var sys = require('sys');
+var util = require('util');
 
 var LRU = exports.LRU = function (max) {
     events.EventEmitter.call(this);
@@ -8,7 +8,7 @@ var LRU = exports.LRU = function (max) {
     this.length = 0;
     this.max = max || 1000;
 };
-sys.inherits(LRU, events.EventEmitter);
+util.inherits(LRU, events.EventEmitter);
 
 LRU.prototype.remove = function (key) {
   var element = this.cache[key];
@@ -38,7 +38,6 @@ LRU.prototype.set = function (key, value) {
 
     if (this.head) {
         this.cache[this.head].next = key;
-        element.prev = this.head;
     }
     this.head = key;
 
