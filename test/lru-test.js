@@ -123,5 +123,23 @@ suite.addBatch({
   }
 });
 
+suite.addBatch({
+  "evict event": {
+    "'evict' event is fired when evicting old keys": function() {
+      var lru = new LRU.LRU(2);
+      var events = [];
+      lru.on('evict', function(element) { events.push(element); });
+
+      lru.set('foo1', 'bar1');
+      lru.set('foo2', 'bar2');
+      lru.set('foo3', 'bar3');
+      lru.set('foo4', 'bar4');
+
+      var expect = [{key:'foo1', value:'bar1'}, {key:'foo2', value:'bar2'}];
+      assert.deepEqual(events, expect);
+    }
+  }
+});
+
 suite.export(module);
 
