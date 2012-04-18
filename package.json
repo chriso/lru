@@ -1,6 +1,6 @@
 { "name"          : "lru",
   "description"   : "A simple O(1) LRU cache",
-  "version"       : "0.1.0",
+  "version"       : "0.1.4",
   "author"        : "Chris O'Hara <cohara87@gmail.com>",
   "main"          : "index",
   "bugs": {
