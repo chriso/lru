@@ -17,3 +17,8 @@ cache.set('foo', 'bar');
 cache.get('foo'); //=> bar
 ```
 
+### Credits
+
+A big thanks to [Dusty Leary](https://github.com/dustyleary) who
+finished the library.
+
