@@ -30,7 +30,8 @@ LRU.prototype.remove = function (key) {
 LRU.prototype.set = function (key, value) {
     element = this.remove(key);
     element = element || { value:value };
-
+    
+    element.value = value
     element.next = null;
     element.prev = this.head;
 
