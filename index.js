@@ -11,26 +11,26 @@ var LRU = exports.LRU = function (max) {
 util.inherits(LRU, events.EventEmitter);
 
 LRU.prototype.remove = function (key) {
-  var element = this.cache[key];
-  if(element) {
-    delete this.cache[key];
-    --this.length;
-    if(element.prev) this.cache[element.prev].next = element.next;
-    if(element.next) this.cache[element.next].prev = element.prev;
-    if(this.head == key) {
-      this.head = element.prev;
+    var element = this.cache[key];
+    if(element) {
+        delete this.cache[key];
+        --this.length;
+        if(element.prev) this.cache[element.prev].next = element.next;
+        if(element.next) this.cache[element.next].prev = element.prev;
+        if(this.head == key) {
+            this.head = element.prev;
+        }
+        if(this.tail == key) {
+            this.tail = element.next;
+        }
     }
-    if(this.tail == key) {
-      this.tail = element.next;
-    }
-  }
-  return element;
+    return element;
 }
 
 LRU.prototype.set = function (key, value) {
     element = this.remove(key);
     element = element || { value:value };
-    
+
     element.value = value
     element.next = null;
     element.prev = this.head;
@@ -49,6 +49,8 @@ LRU.prototype.set = function (key, value) {
     if (++this.length > this.max) {
         this.evict();
     }
+
+    return value
 };
 
 LRU.prototype.get = function (key) {
