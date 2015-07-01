@@ -6,19 +6,48 @@
 $ npm install lru
 ```
 
-### Usage
+### Example
 
 ```javascript
 var LRU = require('lru').LRU;
 
-var cache = new LRU(10);
+var cache = new LRU(2),
+    evicted
+
+cache.on('evict',function(data) { evicted = data });
 
 cache.set('foo', 'bar');
 cache.get('foo'); //=> bar
+
+cache.set('foo2', 'bar2');
+cache.get('foo2'); //=> bar2
+
+cache.set('foo3', 'bar3');
+cache.get('foo3'); //=> bar3,  evicted = { key: 'foo', value: 'bar' }
 ```
+
+### API
+
+#### `LRU( length )`
+Create a new LRU cache that stores `length` elements before evicted the least recently used.
+
+**Returns**: the newly created LRU cache
+
+
+#### `.set( key, value )`
+Set the value of the key and mark the key as most recently used.
+
+**Returns**: `value`
+
+#### `.on( event, callback )`
+Respond to events. Currently only the `evict` event is implemented. When a key is evicted, the callback is executed with an associative array containing the evicted key: `{key: key, value: value}`.
+
 
 ### Credits
 
 A big thanks to [Dusty Leary](https://github.com/dustyleary) who
 finished the library.
 
+### License
+
+MIT
