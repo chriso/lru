@@ -36,12 +36,22 @@ Create a new LRU cache that stores `length` elements before evicting the least r
 **Returns**: the newly created LRU cache
 
 
-#### `.set( key, value )`
+#### Methods
+
+##### `.set( key, value )`
 Set the value of the key and mark the key as most recently used.
 
 **Returns**: `value`
 
-#### `.on( event, callback )`
+##### `.set( key, value )`
+Set the value of the key and mark the key as most recently used.
+
+##### `.get( key )`
+Query the value of the key and mark the key as most recently used.
+
+**Returns**: value of key if found; `undefined` otherwise.
+
+##### `.on( event, callback )`
 Respond to events. Currently only the `evict` event is implemented. When a key is evicted, the callback is executed with an associative array containing the evicted key: `{key: key, value: value}`.
 
 
