@@ -59,6 +59,14 @@ suite.addBatch({
 });
 
 suite.addBatch({
+  "get() returns item value": function() {
+    var lru = new LRU.LRU(2)
+
+    assert.equal( lru.set('foo','bar'), 'bar')
+  }
+});
+
+suite.addBatch({
   "idempotent 'changes'": {
     "set() and remove() on empty LRU is idempotent": function() {
       var lru = new LRU.LRU();
