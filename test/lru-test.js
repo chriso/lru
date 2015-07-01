@@ -54,6 +54,17 @@ suite.addBatch({
     assert.deepEqual(['foo3','foo4'], keys(lru.cache));
   }
 })
+
+suite.addBatch({
+  "ovrewriting a key updates the value": function() {
+    var lru = new LRU(2);
+    lru.set('foo1', 'bar1');
+    assert.equal('bar1', lru.get('foo1'))
+    lru.set('foo1', 'bar2');
+    assert.equal('bar2', lru.get('foo1'))
+  }
+})
+
 suite.addBatch({
   "lru invariant is maintained for get()": function() {
     var lru = new LRU(2);
@@ -68,6 +79,7 @@ suite.addBatch({
     assert.deepEqual(['foo1','foo3'], keys(lru.cache));
   }
 });
+
 suite.addBatch({
   "lru invariant is maintained for get()": function() {
     var lru = new LRU(2);

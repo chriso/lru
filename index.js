@@ -35,6 +35,7 @@ LRU.prototype.remove = function (key) {
 LRU.prototype.set = function (key, value) {
     if( this.cache.hasOwnProperty(key) ) {
         element = this.cache[key]
+        element.value = value
 
         // If it's already the head, there's nothing more to do:
         if( key === this.head ) {
