@@ -52,7 +52,6 @@ LRU.prototype.set = function (key, value) {
         }
     }
 
-    element.value = value
     element.next = null;
     element.prev = this.head;
 
