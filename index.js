@@ -12,14 +12,19 @@ util.inherits(LRU, events.EventEmitter);
 
 LRU.prototype.remove = function (key) {
     var element = this.cache[key];
+
     if(element) {
         delete this.cache[key];
+
         --this.length;
+
         if(element.prev) this.cache[element.prev].next = element.next;
         if(element.next) this.cache[element.next].prev = element.prev;
+
         if(this.head == key) {
             this.head = element.prev;
         }
+
         if(this.tail == key) {
             this.tail = element.next;
         }
@@ -28,14 +33,27 @@ LRU.prototype.remove = function (key) {
 }
 
 LRU.prototype.set = function (key, value) {
-    element = this.remove(key);
-    element = element || { value:value };
+    if( this.cache.hasOwnProperty(key) ) {
+        element = this.cache[key]
+        element.value = value
 
-    element.value = value
+        // If it's already the head, there's nothing more to do:
+        if( key === this.head ) {
+            return value;
+        }
+    } else {
+        element = { value:value };
+
+        this.cache[key] = element;
+
+        // Eviction is only possible if the key didn't already exist:
+        if (++this.length > this.max) {
+            this.evict();
+        }
+    }
+
     element.next = null;
     element.prev = this.head;
-
-    this.cache[key] = element;
 
     if (this.head) {
         this.cache[this.head].next = key;
@@ -46,10 +64,6 @@ LRU.prototype.set = function (key, value) {
       this.tail = key;
     }
 
-    if (++this.length > this.max) {
-        this.evict();
-    }
-
     return value
 };
 
@@ -57,7 +71,25 @@ LRU.prototype.get = function (key) {
     var element = this.cache[key];
     if (!element) { return; }
 
-    this.set(key, element.value);
+    if( this.length > 1 ) {
+        // Tail only changes if this was the tail:
+        if( key === this.tail ) this.tail = element.next
+
+        if( this.head !== key ) {
+            // Set prev -> next:
+            if( element.prev ) this.cache[element.prev].next = element.next
+
+            // Set prevhead->next:
+            if( this.head ) this.cache[this.head].next = key
+        }
+
+        // Set next -> prev:
+        if( element.next ) this.cache[element.next].prev = element.prev
+
+        // Set new head:
+        this.head = key
+    }
+
     return element.value;
 };
 
