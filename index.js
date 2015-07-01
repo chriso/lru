@@ -42,8 +42,7 @@ LRU.prototype.set = function (key, value) {
             return value;
         }
     } else {
-        element = this.remove(key);
-        element = element || { value:value };
+        element = { value:value };
 
         this.cache[key] = element;
 
