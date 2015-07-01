@@ -28,8 +28,8 @@ cache.get('foo3'); //=> bar3,  evicted = { key: 'foo', value: 'bar' }
 
 ### API
 
-#### `LRU( length )`
-Create a new LRU cache that stores `length` elements before evicted the least recently used.
+#### `require('lru').LRU( length )`
+Create a new LRU cache that stores `length` elements before evicting the least recently used.
 
 **Returns**: the newly created LRU cache
 
