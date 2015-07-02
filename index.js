@@ -1,7 +1,7 @@
 var events = require('events');
 var util = require('util');
 
-var LRU = exports.LRU = function (max) {
+var LRU = module.exports = function (max) {
     events.EventEmitter.call(this);
     this.cache = {}
     this.head = this.tail = null;

@@ -1,6 +1,6 @@
 var assert = require('assert');
 var vows = require('vows');
-var LRU = require('../').LRU;
+var LRU = require('../');
 
 function keys(obj) {
   var result = [];
