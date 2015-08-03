@@ -4,24 +4,18 @@
   "version": "0.2.2",
   "author": "Chris O'Hara <cohara87@gmail.com>",
   "main": "index",
-  "bugs": {
-    "mail": "cohara87@gmail.com"
-  },
-  "homepage": {
-    "url": "http://github.com/chriso/lru"
-  },
+  "homepage": "http://github.com/chriso/lru",
   "repository": {
     "type": "git",
     "url": "http://github.com/chriso/lru.git"
   },
+  "bugs": {
+    "url": "http://github.com/chriso/lru/issues"
+  },
   "engines": {
     "node": ">= 0.4.0"
   },
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "license": "MIT",
   "devDependencies": {
     "vows": "^0.8.1"
   },
