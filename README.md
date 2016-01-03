@@ -58,6 +58,11 @@ Query the value of the key and mark the key as most recently used.
 
 **Returns**: value of key if found; `undefined` otherwise.
 
+##### `.peek( key )`
+Query the value of the key without marking the key as most recently used.
+
+**Returns**: value of key if found; `undefined` otherwise.
+
 ##### `.remove( key )`
 Remove the key/value pair from the cache.
 
