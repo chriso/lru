@@ -116,6 +116,17 @@ suite.addBatch({
 });
 
 suite.addBatch({
+  "peek() returns item value without changing the order": function() {
+    var lru = new LRU(2)
+    lru.set('foo', 'bar')
+    lru.set('bar', 'baz')
+    assert.equal(lru.peek('foo'), 'bar')
+    lru.set('baz', 'foo')
+    assert.equal(lru.get('foo'), null)
+  }
+});
+
+suite.addBatch({
   "idempotent 'changes'": {
     "set() and remove() on empty LRU is idempotent": function() {
       var lru = new LRU();

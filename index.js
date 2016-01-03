@@ -33,6 +33,10 @@ LRU.prototype.remove = function (key) {
     return element;
 }
 
+LRU.prototype.peek = function (key) {
+  return this.cache.hasOwnProperty(key) ? this.cache[key].value : null
+}
+
 LRU.prototype.set = function (key, value) {
     if( this.cache.hasOwnProperty(key) ) {
         element = this.cache[key]
