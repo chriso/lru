@@ -126,6 +126,17 @@ suite.addBatch({
   }
 });
 
+// suite.addBatch({
+//   "invalidate entries if they are older than maxAge": function() {
+//     var lru = new LRU({maxAge: 5});
+//     lru.set('foo', 'bar');
+//     assert.equal(lru.get('foo'), 'bar');
+//     setTimeout(function () {
+//       assert.equal(lru.get('foo'), null);
+//     }, 50);
+//   }
+// });
+
 suite.addBatch({
   "idempotent 'changes'": {
     "set() and remove() on empty LRU is idempotent": function() {
