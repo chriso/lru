@@ -35,6 +35,16 @@ cache.length               // => 1
 
 #### `LRU( length )`
 Create a new LRU cache that stores `length` elements before evicting the least recently used.
+Optionally you can pass a an options map with additional options instead
+
+``` js
+{
+  max: maxElementsToStore,
+  maxAge: maxAgeInMilliseconds
+}
+```
+
+If you pass `maxAge` items will be evicted if they are older than `maxAge` when you access them.
 
 **Returns**: the newly created LRU cache
 

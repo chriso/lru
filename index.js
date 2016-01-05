@@ -1,13 +1,16 @@
 var events = require('events');
 var util = require('util');
 
-var LRU = module.exports = function (max) {
-    if (!(this instanceof LRU)) return new LRU(max);
+var LRU = module.exports = function (opts) {
+    if (!(this instanceof LRU)) return new LRU(opts);
+    if (typeof opts === 'number') opts = {max: opts};
+    if (!opts) opts = {};
     events.EventEmitter.call(this);
     this.cache = {}
     this.head = this.tail = null;
     this.length = 0;
-    this.max = max || 1000;
+    this.max = opts.max || 1000;
+    this.maxAge = opts.maxAge || 0;
 };
 util.inherits(LRU, events.EventEmitter);
 
@@ -41,6 +44,7 @@ LRU.prototype.set = function (key, value) {
     if( this.cache.hasOwnProperty(key) ) {
         element = this.cache[key]
         element.value = value
+        if (this.maxAge) element.modified = Date.now();
 
         // If it's already the head, there's nothing more to do:
         if( key === this.head ) {
@@ -48,6 +52,7 @@ LRU.prototype.set = function (key, value) {
         }
     } else {
         element = { value:value };
+        if (this.maxAge) element.modified = Date.now();
 
         this.cache[key] = element;
 
@@ -75,6 +80,11 @@ LRU.prototype.set = function (key, value) {
 LRU.prototype.get = function (key) {
     var element = this.cache[key];
     if (!element) { return; }
+    if (this.maxAge && (Date.now() - element.modified) > this.maxAge) {
+        this.remove(key);
+        this.emit('evict', {key:key, value:element.value});
+        return;
+    }
 
     if( this.length > 1 ) {
         // Tail only changes if this was the tail:
