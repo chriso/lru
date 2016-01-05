@@ -126,16 +126,36 @@ suite.addBatch({
   }
 });
 
-// suite.addBatch({
-//   "invalidate entries if they are older than maxAge": function() {
-//     var lru = new LRU({maxAge: 5});
-//     lru.set('foo', 'bar');
-//     assert.equal(lru.get('foo'), 'bar');
-//     setTimeout(function () {
-//       assert.equal(lru.get('foo'), null);
-//     }, 50);
-//   }
-// });
+suite.addBatch({
+  "evicting items by age": {
+    topic: function () {
+      var lru = new LRU({maxAge: 5});
+      lru.set('foo', 'bar');
+      assert.equal(lru.get('foo'), 'bar');
+      var callback = this.callback
+      setTimeout(function () {
+        callback(null, lru);
+      }, 100);
+    },
+    "the entry is removed if age > max_age": function(lru) {
+      assert.equal(lru.get('foo'), null);
+    },
+  },
+  "evicting items by age (2)": {
+    topic: function () {
+      var lru = new LRU({maxAge: 100000});
+      lru.set('foo', 'bar');
+      assert.equal(lru.get('foo'), 'bar');
+      var callback = this.callback
+      setTimeout(function () {
+        callback(null, lru);
+      }, 100);
+    },
+    "the entry is not removed if age < max_age": function(lru) {
+      assert.equal(lru.get('foo'), 'bar');
+    }
+  }
+});
 
 suite.addBatch({
   "idempotent 'changes'": {
@@ -149,7 +169,6 @@ suite.addBatch({
 
       assert.deepEqual(json2, json1);
     },
-
 
     "2 set()s and 2 remove()s on empty LRU is idempotent": function() {
       var lru = new LRU();
