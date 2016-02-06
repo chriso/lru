@@ -15,24 +15,28 @@ var LRU = module.exports = function (opts) {
 util.inherits(LRU, events.EventEmitter);
 
 LRU.prototype.remove = function (key) {
+    if (!this.cache.hasOwnProperty(key)) return;
+
     var element = this.cache[key];
+    delete this.cache[key];
 
-    if(element) {
-        delete this.cache[key];
+    --this.length;
 
-        --this.length;
-
-        if(element.prev) this.cache[element.prev].next = element.next;
-        if(element.next) this.cache[element.next].prev = element.prev;
-
-        if(this.head == key) {
+    if (this.length === 0) {
+        this.head = this.tail = null;
+    } else {
+        if (this.head == key) {
             this.head = element.prev;
-        }
-
-        if(this.tail == key) {
+            this.cache[this.head].next = null;
+        } else if (this.tail == key) {
             this.tail = element.next;
+            this.cache[this.tail].prev = null;
+        } else {
+            this.cache[element.prev].next = element.next;
+            this.cache[element.next].prev = element.prev;
         }
     }
+
     return element;
 }
 
@@ -57,9 +61,10 @@ LRU.prototype.set = function (key, value) {
         this.cache[key] = element;
 
         // Eviction is only possible if the key didn't already exist:
-        if (++this.length > this.max) {
+        if (this.length === this.max) {
             this.evict();
         }
+        ++this.length;
     }
 
     element.next = null;
@@ -78,31 +83,32 @@ LRU.prototype.set = function (key, value) {
 };
 
 LRU.prototype.get = function (key) {
+    if (!this.cache.hasOwnProperty(key)) return;
     var element = this.cache[key];
-    if (!element) { return; }
+
     if (this.maxAge && (Date.now() - element.modified) > this.maxAge) {
         this.remove(key);
         this.emit('evict', {key:key, value:element.value});
         return;
     }
 
-    if( this.length > 1 ) {
-        // Tail only changes if this was the tail:
-        if( key === this.tail ) this.tail = element.next
-
-        if( this.head !== key ) {
-            // Set prev -> next:
-            if( element.prev ) this.cache[element.prev].next = element.next
-
-            // Set prevhead->next:
-            if( this.head ) this.cache[this.head].next = key
+    if( this.head !== key ) {
+        if (key === this.tail) {
+            this.tail = element.next;
+            this.cache[this.tail].prev = null;
+        } else {
+            // Set prev.next -> element.next:
+            this.cache[element.prev].next = element.next;
         }
 
-        // Set next -> prev:
-        if( element.next ) this.cache[element.next].prev = element.prev
+        // Set element.next.prev -> element.prev:
+        this.cache[element.next].prev = element.prev;
 
-        // Set new head:
-        this.head = key
+        // Element is the new head
+        this.cache[this.head].next = key;
+        element.prev = this.head;
+        element.next = null;
+        this.head = key;
     }
 
     return element.value;
@@ -114,4 +120,3 @@ LRU.prototype.evict = function () {
     var element = this.remove(this.tail);
     this.emit('evict', {key:key, value:element.value});
 };
-
