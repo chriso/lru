@@ -37,7 +37,7 @@ LRU.prototype.remove = function (key) {
         }
     }
 
-    return element;
+    return element.value;
 }
 
 LRU.prototype.peek = function (key) {
@@ -117,6 +117,6 @@ LRU.prototype.get = function (key) {
 LRU.prototype.evict = function () {
     if(!this.tail) { return; }
     var key = this.tail;
-    var element = this.remove(this.tail);
-    this.emit('evict', {key:key, value:element.value});
+    var removedValue = this.remove(this.tail);
+    this.emit('evict', {key:key, value:removedValue});
 };
