@@ -45,6 +45,7 @@ LRU.prototype.peek = function (key) {
 }
 
 LRU.prototype.set = function (key, value) {
+    var element;
     if( this.cache.hasOwnProperty(key) ) {
         element = this.cache[key]
         element.value = value
