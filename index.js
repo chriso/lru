@@ -30,7 +30,9 @@ LRU.prototype.remove = function (key) {
             this.cache[this.head].next = null;
         } else if (this.tail == key) {
             this.tail = element.next;
-            this.cache[this.tail].prev = null;
+            if (this.cache.hasOwnProperty(this.tail)) {
+              this.cache[this.tail].prev = null;
+            }
         } else {
             this.cache[element.prev].next = element.next;
             this.cache[element.next].prev = element.prev;
@@ -71,7 +73,7 @@ LRU.prototype.set = function (key, value) {
     element.next = null;
     element.prev = this.head;
 
-    if (this.head) {
+    if (this.head && this.cache.hasOwnProperty(this.head)) {
         this.cache[this.head].next = key;
     }
     this.head = key;
