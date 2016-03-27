@@ -1,5 +1,5 @@
 var events = require('events');
-var util = require('util');
+var inherits = require('inherits');
 
 var LRU = module.exports = function (opts) {
     if (!(this instanceof LRU)) return new LRU(opts);
@@ -12,39 +12,46 @@ var LRU = module.exports = function (opts) {
     this.max = opts.max || 1000;
     this.maxAge = opts.maxAge || 0;
 };
-util.inherits(LRU, events.EventEmitter);
+
+inherits(LRU, events.EventEmitter);
 
 LRU.prototype.remove = function (key) {
+    if (typeof key !== 'string') key = '' + key
     if (!this.cache.hasOwnProperty(key)) return;
 
     var element = this.cache[key];
     delete this.cache[key];
+    this._unlink(key, element.prev, element.next)
+    return element.value;
+}
 
+LRU.prototype._unlink = function (key, prev, next) {
     --this.length;
 
     if (this.length === 0) {
         this.head = this.tail = null;
     } else {
         if (this.head == key) {
-            this.head = element.prev;
+            this.head = prev;
             this.cache[this.head].next = null;
         } else if (this.tail == key) {
-            this.tail = element.next;
+            this.tail = next;
             this.cache[this.tail].prev = null;
         } else {
-            this.cache[element.prev].next = element.next;
-            this.cache[element.next].prev = element.prev;
+            this.cache[prev].next = next;
+            this.cache[next].prev = prev;
         }
     }
-
-    return element.value;
 }
 
 LRU.prototype.peek = function (key) {
+  if (typeof key !== 'string') key = '' + key
   return this.cache.hasOwnProperty(key) ? this.cache[key].value : null
 }
 
 LRU.prototype.set = function (key, value) {
+    if (typeof key !== 'string') key = '' + key
+
     var element;
     if( this.cache.hasOwnProperty(key) ) {
         element = this.cache[key]
@@ -55,6 +62,8 @@ LRU.prototype.set = function (key, value) {
         if( key === this.head ) {
             return value;
         }
+
+        this._unlink(key, element.prev, element.next)
     } else {
         element = { value:value };
         if (this.maxAge) element.modified = Date.now();
@@ -65,8 +74,9 @@ LRU.prototype.set = function (key, value) {
         if (this.length === this.max) {
             this.evict();
         }
-        ++this.length;
     }
+
+    ++this.length;
 
     element.next = null;
     element.prev = this.head;
@@ -84,6 +94,8 @@ LRU.prototype.set = function (key, value) {
 };
 
 LRU.prototype.get = function (key) {
+    if (typeof key !== 'string') key = '' + key
+
     if (!this.cache.hasOwnProperty(key)) return;
     var element = this.cache[key];
 

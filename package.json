@@ -22,5 +22,7 @@
   "scripts": {
     "test": "vows test/*.js --spec"
   },
-  "dependencies": {}
+  "dependencies": {
+    "inherits": "^2.0.1"
+  }
 }
