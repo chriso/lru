@@ -17,10 +17,11 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "standard": "^6.0.8",
     "vows": "^0.8.1"
   },
   "scripts": {
-    "test": "vows test/*.js --spec"
+    "test": "standard && vows test/*.js --spec"
   },
   "dependencies": {
     "inherits": "^2.0.1"
