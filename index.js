@@ -17,6 +17,10 @@ function LRU (opts) {
 
 inherits(LRU, events.EventEmitter)
 
+Object.defineProperty(LRU.prototype, 'keys', {
+  get: function () { return Object.keys(this.cache) }
+})
+
 LRU.prototype.remove = function (key) {
   if (typeof key !== 'string') key = '' + key
   if (!this.cache.hasOwnProperty(key)) return

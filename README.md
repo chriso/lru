@@ -53,6 +53,9 @@ If you pass `maxAge` items will be evicted if they are older than `maxAge` when 
 ##### `.length`
 The number of keys currently in the cache.
 
+##### `.keys`
+Array of all the keys currently in the cache.
+
 #### Methods
 
 ##### `.set( key, value )`

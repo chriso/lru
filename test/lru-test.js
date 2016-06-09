@@ -2,16 +2,6 @@ var assert = require('assert')
 var vows = require('vows')
 var LRU = require('../')
 
-function keys (obj) {
-  var result = []
-  for (var k in obj) {
-    if (obj.hasOwnProperty(k)) {
-      result.push(k)
-    }
-  }
-  return result
-}
-
 var suite = vows.describe('LRU')
 
 suite.addBatch({
@@ -51,7 +41,7 @@ suite.addBatch({
     lru.set('foo3', 'bar3')
     lru.set('foo4', 'bar4')
 
-    assert.deepEqual(['foo3', 'foo4'], keys(lru.cache))
+    assert.deepEqual(['foo3', 'foo4'], lru.keys)
   }
 })
 
@@ -76,7 +66,7 @@ suite.addBatch({
 
     lru.set('foo3', 'bar3')
 
-    assert.deepEqual(['foo1', 'foo3'], keys(lru.cache))
+    assert.deepEqual(['foo1', 'foo3'], lru.keys)
   },
   'lru invariant is maintained after set(), get() and remove()': function () {
     var lru = new LRU(2)
@@ -86,23 +76,11 @@ suite.addBatch({
     lru.remove('a')
     lru.set('c', 1)
     lru.set('d', 1)
-    assert.deepEqual(['c', 'd'], keys(lru.cache))
+    assert.deepEqual(['c', 'd'], lru.keys)
   }
 })
 
 suite.addBatch({
-  'lru invariant is maintained for get()': function () {
-    var lru = new LRU(2)
-
-    lru.set('foo1', 'bar1')
-    lru.set('foo2', 'bar2')
-
-    lru.get('foo2') // now foo2 should be deleted instead of foo1
-
-    lru.set('foo3', 'bar3')
-
-    assert.deepEqual(['foo2', 'foo3'], keys(lru.cache))
-  },
   'lru invariant is maintained in the corner case size == 1': function () {
     var lru = new LRU(1)
 
@@ -113,7 +91,7 @@ suite.addBatch({
 
     lru.set('foo3', 'bar3')
 
-    assert.deepEqual(['foo3'], keys(lru.cache))
+    assert.deepEqual(['foo3'], lru.keys)
   }
 })
 
