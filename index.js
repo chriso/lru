@@ -123,3 +123,7 @@ LRU.prototype.evict = function () {
   var value = this.remove(this.tail)
   this.emit('evict', {key: key, value: value})
 }
+
+LRU.prototype.keys = function () {
+  return Object.keys(this.cache)
+}
