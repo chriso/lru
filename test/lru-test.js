@@ -115,6 +115,23 @@ suite.addBatch({
 })
 
 suite.addBatch({
+  'peek respects max age': {
+    topic: function () {
+      var lru = new LRU({maxAge: 5})
+      lru.set('foo', 'bar')
+      assert.equal(lru.get('foo'), 'bar')
+      var callback = this.callback
+      setTimeout(function () {
+        callback(null, lru)
+      }, 100)
+    },
+    'the entry is removed if age > max_age': function (lru) {
+      assert.equal(lru.peek('foo'), null)
+    }
+  }
+})
+
+suite.addBatch({
   'evicting items by age': {
     topic: function () {
       var lru = new LRU({maxAge: 5})

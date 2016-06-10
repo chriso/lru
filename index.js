@@ -51,7 +51,12 @@ LRU.prototype._unlink = function (key, prev, next) {
 }
 
 LRU.prototype.peek = function (key) {
-  return this.cache.hasOwnProperty(key) ? this.cache[key].value : null
+  if (!this.cache.hasOwnProperty(key)) return
+
+  var element = this.cache[key]
+
+  if (!this._checkAge(key, element)) return
+  return element.value
 }
 
 LRU.prototype.set = function (key, value) {
@@ -87,17 +92,22 @@ LRU.prototype.set = function (key, value) {
   return value
 }
 
+LRU.prototype._checkAge = function (key, element) {
+  if (this.maxAge && (Date.now() - element.modified) > this.maxAge) {
+    this.remove(key)
+    this.emit('evict', {key: key, value: element.value})
+    return false
+  }
+  return true
+}
+
 LRU.prototype.get = function (key) {
   if (typeof key !== 'string') key = '' + key
   if (!this.cache.hasOwnProperty(key)) return
 
   var element = this.cache[key]
 
-  if (this.maxAge && (Date.now() - element.modified) > this.maxAge) {
-    this.remove(key)
-    this.emit('evict', {key: key, value: element.value})
-    return
-  }
+  if (!this._checkAge(key, element)) return
 
   if (this.head !== key) {
     if (key === this.tail) {
