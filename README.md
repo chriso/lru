@@ -29,6 +29,11 @@ cache.get('foo3');         // => 'bar3'
 cache.remove('foo2')       // => 'bar2'
 cache.remove('foo4')       // => undefined
 cache.length               // => 1
+cache.keys                 // => ['foo3']
+
+cache.clear()              // => it will NOT emit the 'evict' event
+cache.length               // => 0
+cache.keys                 // => []
 ```
 
 ### API
@@ -76,7 +81,11 @@ Query the value of the key without marking the key as most recently used.
 ##### `.remove( key )`
 Remove the value from the cache.
 
+
 **Returns**: value of key if found; `undefined` otherwise.
+
+##### `.clear()`
+Clear the cache. This method does **NOT** emit the `evict` event.
 
 ##### `.on( event, callback )`
 Respond to events. Currently only the `evict` event is implemented. When a key is evicted, the callback is executed with an associative array containing the evicted key: `{key: key, value: value}`.

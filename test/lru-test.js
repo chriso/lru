@@ -5,6 +5,20 @@ var LRU = require('../')
 var suite = vows.describe('LRU')
 
 suite.addBatch({
+  'clear() sets the cache to its initial state': function () {
+    var lru = new LRU(2)
+
+    var json1 = JSON.stringify(lru)
+
+    lru.set('foo', 'bar')
+    lru.clear()
+    var json2 = JSON.stringify(lru)
+
+    assert.equal(json2, json1)
+  }
+})
+
+suite.addBatch({
   'setting keys doesn\'t grow past max size': function () {
     var lru = new LRU(3)
     assert.equal(0, lru.length)
