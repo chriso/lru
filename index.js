@@ -21,6 +21,12 @@ Object.defineProperty(LRU.prototype, 'keys', {
   get: function () { return Object.keys(this.cache) }
 })
 
+LRU.prototype.clear = function () {
+  this.cache = {}
+  this.head = this.tail = null
+  this.length = 0
+}
+
 LRU.prototype.remove = function (key) {
   if (typeof key !== 'string') key = '' + key
   if (!this.cache.hasOwnProperty(key)) return

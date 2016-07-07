@@ -21,3 +21,6 @@ console.log(cache.remove('foo2')) // => { key: 'foo2', value: 'bar2' }
 console.log(cache.remove('foo4')) // => undefined
 console.log(cache.length)         // => 1
 console.log(evicted)              // => evicted = { key: 'foo', value: 'bar' }
+
+cache.clear()                     // it will NOT emit the 'evict' event
+console.log(cache.length)         // => 0
