@@ -116,17 +116,9 @@ LRU.prototype.get = function (key) {
   if (!this._checkAge(key, element)) return
 
   if (this.head !== key) {
-    if (key === this.tail) {
-      this.tail = element.next
-      this.cache[this.tail].prev = null
-    } else {
-      // Set prev.next -> element.next:
-      this.cache[element.prev].next = element.next
-    }
+    this._unlink(key, element.prev, element.next)
 
-    // Set element.next.prev -> element.prev:
-    this.cache[element.next].prev = element.prev
-
+    this.length++
     // Element is the new head
     this.cache[this.head].next = key
     element.prev = this.head
