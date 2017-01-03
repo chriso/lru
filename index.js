@@ -8,9 +8,7 @@ function LRU (opts) {
   if (typeof opts === 'number') opts = {max: opts}
   if (!opts) opts = {}
   events.EventEmitter.call(this)
-  this.cache = {}
-  this.head = this.tail = null
-  this.length = 0
+  this.clear()
   this.max = opts.max || 1000
   this.maxAge = opts.maxAge || 0
 }
