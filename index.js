@@ -16,21 +16,21 @@ function LRU (opts) {
 inherits(LRU, events.EventEmitter)
 
 Object.defineProperty(LRU.prototype, 'keys', {
-  get: function () { return Object.keys(this.cache) }
+  get: function () { return Array.from(this.cache.keys()) }
 })
 
 LRU.prototype.clear = function () {
-  this.cache = {}
+  this.cache = new Map()
   this.head = this.tail = null
   this.length = 0
 }
 
 LRU.prototype.remove = function (key) {
   if (typeof key !== 'string') key = '' + key
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!this.cache.has(key)) return
 
-  var element = this.cache[key]
-  delete this.cache[key]
+  var element = this.cache.get(key)
+  this.cache.delete(key)
   this._unlink(key, element.prev, element.next)
   return element.value
 }
@@ -43,21 +43,21 @@ LRU.prototype._unlink = function (key, prev, next) {
   } else {
     if (this.head === key) {
       this.head = prev
-      this.cache[this.head].next = null
+      this.cache.get(this.head).next = null
     } else if (this.tail === key) {
       this.tail = next
-      this.cache[this.tail].prev = null
+      this.cache.get(this.tail).prev = null
     } else {
-      this.cache[prev].next = next
-      this.cache[next].prev = prev
+      this.cache.get(prev).next = next
+      this.cache.get(next).prev = prev
     }
   }
 }
 
 LRU.prototype.peek = function (key) {
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!this.cache.has(key)) return
 
-  var element = this.cache[key]
+  var element = this.cache.get(key)
 
   if (!this._checkAge(key, element)) return
   return element.value
@@ -68,8 +68,8 @@ LRU.prototype.set = function (key, value) {
 
   var element
 
-  if (this.cache.hasOwnProperty(key)) {
-    element = this.cache[key]
+  if (this.cache.has(key)) {
+    element = this.cache.get(key)
     element.value = value
     if (this.maxAge) element.modified = Date.now()
 
@@ -79,7 +79,7 @@ LRU.prototype.set = function (key, value) {
   } else {
     element = {value: value, modified: 0, next: null, prev: null}
     if (this.maxAge) element.modified = Date.now()
-    this.cache[key] = element
+    this.cache.set(key, element)
 
     // Eviction is only possible if the key didn't already exist:
     if (this.length === this.max) this.evict()
@@ -89,7 +89,7 @@ LRU.prototype.set = function (key, value) {
   element.next = null
   element.prev = this.head
 
-  if (this.head) this.cache[this.head].next = key
+  if (this.head) this.cache.get(this.head).next = key
   this.head = key
 
   if (!this.tail) this.tail = key
@@ -107,26 +107,26 @@ LRU.prototype._checkAge = function (key, element) {
 
 LRU.prototype.get = function (key) {
   if (typeof key !== 'string') key = '' + key
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!this.cache.has(key)) return
 
-  var element = this.cache[key]
+  var element = this.cache.get(key)
 
   if (!this._checkAge(key, element)) return
 
   if (this.head !== key) {
     if (key === this.tail) {
       this.tail = element.next
-      this.cache[this.tail].prev = null
+      this.cache.get(this.tail).prev = null
     } else {
       // Set prev.next -> element.next:
-      this.cache[element.prev].next = element.next
+      this.cache.get(element.prev).next = element.next
     }
 
     // Set element.next.prev -> element.prev:
-    this.cache[element.next].prev = element.prev
+    this.cache.get(element.next).prev = element.prev
 
     // Element is the new head
-    this.cache[this.head].next = key
+    this.cache.get(this.head).next = key
     element.prev = this.head
     element.next = null
     this.head = key
