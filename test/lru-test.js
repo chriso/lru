@@ -178,43 +178,6 @@ suite.addBatch({
 
 suite.addBatch({
   'idempotent changes': {
-    'set() and remove() on empty LRU is idempotent': function () {
-      var lru = new LRU()
-      var json1 = JSON.stringify(lru)
-
-      lru.set('foo1', 'bar1')
-      lru.remove('foo1')
-      var json2 = JSON.stringify(lru)
-
-      assert.deepEqual(json2, json1)
-    },
-
-    '2 set()s and 2 remove()s on empty LRU is idempotent': function () {
-      var lru = new LRU()
-      var json1 = JSON.stringify(lru)
-
-      lru.set('foo1', 'bar1')
-      lru.set('foo2', 'bar2')
-      lru.remove('foo1')
-      lru.remove('foo2')
-      var json2 = JSON.stringify(lru)
-
-      assert.deepEqual(json2, json1)
-    },
-
-    '2 set()s and 2 remove()s (in opposite order) on empty LRU is idempotent': function () {
-      var lru = new LRU()
-      var json1 = JSON.stringify(lru)
-
-      lru.set('foo1', 'bar1')
-      lru.set('foo2', 'bar2')
-      lru.remove('foo2')
-      lru.remove('foo1')
-      var json2 = JSON.stringify(lru)
-
-      assert.deepEqual(json2, json1)
-    },
-
     'after setting one key, get() is idempotent': function () {
       var lru = new LRU(2)
       lru.set('a', 'a')
