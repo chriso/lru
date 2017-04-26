@@ -24,6 +24,7 @@
     "test": "standard && vows test/*.js --spec"
   },
   "dependencies": {
-    "inherits": "^2.0.1"
+    "inherits": "^2.0.1",
+    "events": "^1.1.1"
   }
 }
