@@ -258,4 +258,29 @@ suite.addBatch({
   }
 })
 
+suite.addBatch({
+  'vacate': {
+    'vacate all entries, making sure \'evict\' is fired for each': function () {
+      var lru = new LRU(2)
+      var events = []
+      lru.on('evict', function (element) { events.push(element) })
+
+      lru.set('foo1', 'bar1')
+      lru.set('foo2', 'bar2')
+      lru.set('foo3', 'bar3')
+      lru.set('foo4', 'bar4')
+
+      var expect = [{key: 'foo1', value: 'bar1'}, {key: 'foo2', value: 'bar2'}]
+      assert.deepEqual(events, expect)
+
+      lru.vacate()
+
+      expect = [{key: 'foo1', value: 'bar1'}, {key: 'foo2', value: 'bar2'}, {key: 'foo3', value: 'bar3'}, {key: 'foo4', value: 'bar4'}]
+      assert.deepEqual(events, expect)
+
+      assert.strictEqual(lru.length, 0)
+    }
+  }
+})
+
 suite.export(module)

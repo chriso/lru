@@ -143,3 +143,8 @@ LRU.prototype.evict = function () {
   var value = this.remove(this.tail)
   this.emit('evict', {key: key, value: value})
 }
+
+LRU.prototype.vacate = function () {
+  if (!this.tail) return
+  while (this.length > 0) this.evict()
+}

@@ -87,6 +87,9 @@ Remove the value from the cache.
 ##### `.clear()`
 Clear the cache. This method does **NOT** emit the `evict` event.
 
+##### `.vacate()`
+Clear the cache. This method **DOES** emit the `evict` event.
+
 ##### `.on( event, callback )`
 Respond to events. Currently only the `evict` event is implemented. When a key is evicted, the callback is executed with an associative array containing the evicted key: `{key: key, value: value}`.
 
