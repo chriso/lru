@@ -8,7 +8,7 @@ function LRU (opts) {
   if (typeof opts === 'number') opts = {max: opts}
   if (!opts) opts = {}
   events.EventEmitter.call(this)
-  this.cache = {}
+  this.cache = Object.create(null)
   this.head = this.tail = null
   this.length = 0
   this.max = opts.max || 1000
@@ -29,7 +29,7 @@ LRU.prototype.clear = function () {
 
 LRU.prototype.remove = function (key) {
   if (typeof key !== 'string') key = '' + key
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!(key in this.cache)) return
 
   var element = this.cache[key]
   delete this.cache[key]
@@ -57,7 +57,7 @@ LRU.prototype._unlink = function (key, prev, next) {
 }
 
 LRU.prototype.peek = function (key) {
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!(key in this.cache)) return
 
   var element = this.cache[key]
 
@@ -70,7 +70,7 @@ LRU.prototype.set = function (key, value) {
 
   var element
 
-  if (this.cache.hasOwnProperty(key)) {
+  if (key in this.cache)) {
     element = this.cache[key]
     element.value = value
     if (this.maxAge) element.modified = Date.now()
@@ -109,7 +109,7 @@ LRU.prototype._checkAge = function (key, element) {
 
 LRU.prototype.get = function (key) {
   if (typeof key !== 'string') key = '' + key
-  if (!this.cache.hasOwnProperty(key)) return
+  if (!(key in this.cache)) return
 
   var element = this.cache[key]
 
