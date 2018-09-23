@@ -22,8 +22,5 @@
   },
   "scripts": {
     "test": "standard && vows test/*.js --spec"
-  },
-  "dependencies": {
-    "inherits": "^2.0.1"
   }
 }
