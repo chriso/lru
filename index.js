@@ -57,6 +57,7 @@ LRU.prototype._unlink = function (key, prev, next) {
 }
 
 LRU.prototype.peek = function (key) {
+  if (typeof key !== 'string') key = '' + key
   if (!this.cache.hasOwnProperty(key)) return
 
   var element = this.cache[key]
