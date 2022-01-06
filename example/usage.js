@@ -14,6 +14,8 @@ cache.get('foo')                  // => 'bar'
 cache.set('foo2', 'bar2')         // => 'bar2'
 cache.get('foo2')                 // => 'bar2'
 
+cache.peekLru()                   // => { key: 'foo', value: 'bar' }
+
 cache.set('foo3', 'bar3')         // => 'bar3'
 cache.get('foo3')                 // => 'bar3'
 

@@ -258,4 +258,27 @@ suite.addBatch({
   }
 })
 
+suite.addBatch({
+  'peekLru() returns return the least recently used key and value ': function () {
+    var lru = new LRU(2)
+    assert.equal(undefined, lru.peekLru())
+
+    lru.set('foo', 'bar')
+    assert.equal('foo', lru.peekLru().key)
+    assert.equal('bar', lru.peekLru().value)
+
+    lru.set('bar', 'baz')
+    assert.equal('foo', lru.peekLru().key)
+    assert.equal('bar', lru.peekLru().value)
+
+    lru.set('baz', 'foo')
+    assert.equal('bar', lru.peekLru().key)
+    assert.equal('baz', lru.peekLru().value)
+
+    lru.get('bar')
+    assert.equal('baz', lru.peekLru().key)
+    assert.equal('foo', lru.peekLru().value)
+  }
+})
+
 suite.export(module)
