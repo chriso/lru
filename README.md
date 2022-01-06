@@ -24,6 +24,8 @@ cache.get('foo'); //=> bar
 cache.set('foo2', 'bar2');
 cache.get('foo2'); //=> bar2
 
+cache.peekLru()            // => { key: 'foo', value: 'bar' }
+
 cache.set('foo3', 'bar3'); // => evicted = { key: 'foo', value: 'bar' }
 cache.get('foo3');         // => 'bar3'
 cache.remove('foo2')       // => 'bar2'
@@ -75,6 +77,11 @@ Query the value of the key and mark the key as most recently used.
 
 ##### `.peek( key )`
 Query the value of the key without marking the key as most recently used.
+
+**Returns**: value of key if found; `undefined` otherwise.
+
+##### `.peekLru()`
+Query the key and value pair of the least recently used without marking the key as most recently used.
 
 **Returns**: value of key if found; `undefined` otherwise.
 

@@ -143,3 +143,9 @@ LRU.prototype.evict = function () {
   var value = this.remove(this.tail)
   this.emit('evict', {key: key, value: value})
 }
+
+LRU.prototype.peekLru = function () {
+  if (!this.tail) return
+  var element = this.cache[this.tail]
+  return { key: this.tail, value: element.value }
+}
